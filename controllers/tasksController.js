@@ -2,6 +2,18 @@ const Task = require('../models/Task')
 const User = require('../models/User')
 const asyncHandler = require('express-async-handler')
 
+// function updateUserProperty(obj) {
+//     if (obj.hasOwnProperty('user')) {
+//         obj.userID = obj.user;
+//         delete obj.user;
+//     }
+//     if (obj.hasOwnProperty('selectedTags')) {
+//         obj.tags = obj.selectedTags;
+//         delete obj.selectedTags;
+//     }
+//     return obj;
+// }
+
 // @desc Get all tasks 
 // @route GET /tasks
 // @access Private
@@ -21,8 +33,18 @@ const getAllTasks = asyncHandler(async (req, res) => {
 // @route POST /tasks
 // @access Private
 const createNewTask = asyncHandler(async (req, res) => {
-    const { userID, title, tags, date } = req.body
 
+    const { user, title, selectedTags, date } = req.body
+    const userID = user
+    const tags = selectedTags
+    // console.log(JSON.stringify(req.body) + "---------")
+    // if (!userID && user || !tags && selectedTags) {
+    //     req.body = updateUserProperty(req.body);
+    // }
+    // console.log(JSON.stringify(req.body) + "*******")
+    // console.log(!userID)
+    // console.log(userID)
+    // console.log(!title)
     // Confirm data
     if (!userID || !title) {
         return res.status(400).json({ message: 'All fields are required 1' })
@@ -51,7 +73,6 @@ const createNewTask = asyncHandler(async (req, res) => {
 // @access Private
 const updateTask = asyncHandler(async (req, res) => {
     const { _id, userID, title, tags, date, completed } = req.body
-
     // Confirm data
     if (!_id || !userID || !title || !date || typeof completed !== 'boolean') {
         return res.status(400).json({ message: 'All fields are required 2' })
@@ -106,6 +127,7 @@ const deleteTask = asyncHandler(async (req, res) => {
 
     res.json(reply)
 })
+
 
 module.exports = {
     getAllTasks,
